@@ -1,0 +1,3 @@
+{
+    "engine": ["gcp", "aws", "azure", "local"]
+}

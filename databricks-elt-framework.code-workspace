@@ -1,0 +1,10 @@
+{
+	"folders": [
+		{
+			"path": "."
+		}
+	],
+	"settings": {
+		"python.defaultInterpreterPath": "C:\\Users\\bharg\\.msvscode.hdinsight\\hdinsightJupyter\\Scripts\\python.exe"
+	}
+}
