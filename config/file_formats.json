@@ -1,3 +1,0 @@
-{
-    "formats": ["csv", "avro", "parquet", "delta"]
-}

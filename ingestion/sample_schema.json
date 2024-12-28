@@ -1,0 +1,1 @@
+{"fields":[{"metadata":{},"name":"CashierID","nullable":true,"type":"string"},{"metadata":{},"name":"State","nullable":true,"type":"string"},{"metadata":{},"name":"PinCode","nullable":true,"type":"string"},{"metadata":{},"name":"creationDt","nullable":true,"type":"date"}],"type":"struct"}
