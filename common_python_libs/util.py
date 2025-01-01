@@ -12,8 +12,10 @@ def validate_ing_format(format : str):
 
         if format in data['formats']:
             print(f'Supported format {format}. Proceed further')
+            return True
         else:
-            raise ValueError(f'Not supported format {format}')
+            print(f'Not Supported format {format}. Kill the job')
+            return False
         
 def get_runtime(): 
 

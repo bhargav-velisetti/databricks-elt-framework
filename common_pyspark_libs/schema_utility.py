@@ -4,8 +4,8 @@ import json
 def build_schema_from_file(path_to_schema_file : str) -> StructType:
 
     with open(path_to_schema_file) as f:
-        scheme = StructType.fromJson(json.load(f))
-        return scheme
+        schema = StructType.fromJson(json.load(f))
+        return schema
 
 def standarize_columns(df_schema : StructType):
 
