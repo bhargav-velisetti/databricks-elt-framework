@@ -77,6 +77,8 @@ def main():
 
     #Structuring the kafka messages with delta table schema
     df = tranform_kafka_records(df, schema , src_sys_format )
+    #Removing the special characters from the column names
+    df = standarize_df_columns(df)
     df.printSchema()
 
     df_wrt_kafka(runtime , df,dbx_table_format, dbx_table_location,outputmode , trigger_type )

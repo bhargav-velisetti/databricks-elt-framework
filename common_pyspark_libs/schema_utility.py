@@ -1,5 +1,7 @@
 from pyspark.sql.types import IntegerType,StringType,StructType,StructField
+from pyspark.sql import DataFrame
 import json
+import re 
 
 def build_schema_from_file(path_to_schema_file : str) -> StructType:
 
@@ -7,13 +9,7 @@ def build_schema_from_file(path_to_schema_file : str) -> StructType:
         schema = StructType.fromJson(json.load(f))
         return schema
 
-def standarize_columns(df_schema : StructType):
-
-    print("""implement this function. 
-          1. all the columns should be in lower case 
-          2. no spaces are special chars.
-          3. replace special chars with _
-          """)
-
-    return StructType
-
+def standarize_df_columns(df : DataFrame) -> DataFrame:
+        for field in df.schema.names:
+            df = df.withColumnRenamed(field, re.sub(r'[^_a-zA-Z0-9\s]', '', field.lower().replace(" ","_")) )
+            return df
