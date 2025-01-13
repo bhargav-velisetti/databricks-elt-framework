@@ -6,12 +6,8 @@ from pyspark.sql.streaming import DataStreamWriter
 
 def df_rdr_kafka(spark : SparkSession, options_dict : dict ):
 
-    df_stream_reader = spark.readStream
-
-    for k, v in options_dict.items():
-        df_stream_reader.option(k,v)
-
-    df = df_stream_reader \
+    df = spark.readStream \
+    .options(**options_dict) \
     .format("kafka") \
     .load()
     # Returning the RAW Kafka Data as a Dataframe
@@ -52,7 +48,6 @@ def df_wrt_kafka(runtime : str, df : DataFrame, dbx_table_format : str , dbx_tab
         df_stream_wrt_azure()
 
 
-
 def tranform_kafka_json_records(df : DataFrame, schema : StructType) -> DataFrame:
     df = df.select( F.from_json(df.value.cast("string"), schema=schema).alias('data'), 'timestamp' , 'topic' ).withColumn('row_insert_ts', df.timestamp).withColumn('kafka_topic', df.topic)\
     .select('data.*', 'kafka_topic', 'row_insert_ts')
@@ -63,5 +58,17 @@ def tranform_kafka_records(df : DataFrame, schema : StructType, src_sys_format :
         return tranform_kafka_json_records(df , schema)
     else:
         raise ValueError(f'Kafka record format {src_sys_format} is nor defined yet.')
+    
+def df_rdr_jdbc(spark : SparkSession, options_dict : dict):
+    df = spark.read.format("jdbc").options(**options_dict).load()
+    return df
 
+
+def  df_wrt_jdbc(runtime , df :  DataFrame, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format):
+    if runtime == 'local':
+        df.write.format(dbx_table_format).mode(outputmode).option("path", f'{dbx_table_location}\\data\\').saveAsTable(f'{dbx_table}')
+        print(f'Table {dbx_catalog}.{dbx_db}.{dbx_table} created successfully')
+
+    else:
+        raise ValueError(f'Runtime {runtime} not supported yet.')
 
