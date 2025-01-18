@@ -1,0 +1,62 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "location",
+      "type": "struct",
+      "fields": [
+        {"name": "name", "type": "string", "nullable": true},
+        {"name": "region", "type": "string", "nullable": true},
+        {"name": "country", "type": "string", "nullable": true},
+        {"name": "lat", "type": "double", "nullable": true},
+        {"name": "lon", "type": "double", "nullable": true},
+        {"name": "tz_id", "type": "string", "nullable": true},
+        {"name": "localtime_epoch", "type": "integer", "nullable": true},
+        {"name": "localtime", "type": "string", "nullable": true}
+      ]
+    },
+    {
+      "name": "current",
+      "type": "struct",
+      "fields": [
+        {"name": "last_updated_epoch", "type": "integer", "nullable": true},
+        {"name": "last_updated", "type": "string", "nullable": true},
+        {"name": "temp_c", "type": "float", "nullable": true},
+        {"name": "temp_f", "type": "float", "nullable": true},
+        {"name": "is_day", "type": "integer", "nullable": true},
+        {
+          "name": "condition",
+          "type": "struct",
+          "fields": [
+            {"name": "text", "type": "string", "nullable": true},
+            {"name": "icon", "type": "string", "nullable": true},
+            {"name": "code", "type": "integer", "nullable": true}
+          ]
+        },
+        {"name": "wind_mph", "type": "float", "nullable": true},
+        {"name": "wind_kph", "type": "float", "nullable": true},
+        {"name": "wind_degree", "type": "integer", "nullable": true},
+        {"name": "wind_dir", "type": "string", "nullable": true},
+        {"name": "pressure_mb", "type": "double", "nullable": true},
+        {"name": "pressure_in", "type": "double", "nullable": true},
+        {"name": "precip_mm", "type": "double", "nullable": true},
+        {"name": "precip_in", "type": "double", "nullable": true},
+        {"name": "humidity", "type": "integer", "nullable": true},
+        {"name": "cloud", "type": "integer", "nullable": true},
+        {"name": "feelslike_c", "type": "float", "nullable": true},
+        {"name": "feelslike_f", "type": "float", "nullable": true},
+        {"name": "windchill_c", "type": "float", "nullable": true},
+        {"name": "windchill_f", "type": "float", "nullable": true},
+        {"name": "heatindex_c", "type": "float", "nullable": true},
+        {"name": "heatindex_f", "type": "float", "nullable": true},
+        {"name": "dewpoint_c", "type": "float", "nullable": true},
+        {"name": "dewpoint_f", "type": "float", "nullable": true},
+        {"name": "vis_km", "type": "float", "nullable": true},
+        {"name": "vis_miles", "type": "float", "nullable": true},
+        {"name": "uv", "type": "float", "nullable": true},
+        {"name": "gust_mph", "type": "float", "nullable": true},
+        {"name": "gust_kph", "type": "float", "nullable": true}
+      ]
+    }
+  ]
+}

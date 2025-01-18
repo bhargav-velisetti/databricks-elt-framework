@@ -1,0 +1,525 @@
+{
+  "type": "struct",
+  "fields": [
+    {
+      "name": "location",
+      "type": {
+        "type": "struct",
+        "fields": [
+          {
+            "name": "name",
+            "type": "string",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "region",
+            "type": "string",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "country",
+            "type": "string",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "lat",
+            "type": "float",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "lon",
+            "type": "float",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "tz_id",
+            "type": "string",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "localtime_epoch",
+            "type": "integer",
+            "nullable": true,
+            "metadata": {}
+          },
+          {
+            "name": "localtime",
+            "type": "string",
+            "nullable": true,
+            "metadata": {}
+          }
+        ]
+      },
+      "nullable": true,
+      "metadata": {}
+    },
+    {
+      "name": "forecast",
+      "type": {
+        "type": "struct",
+        "fields": [
+          {
+            "name": "forecastday",
+            "type": {
+              "type": "array",
+              "elementType": {
+                "type": "struct",
+                "fields": [
+                  {
+                    "name": "date",
+                    "type": "string",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "date_epoch",
+                    "type": "integer",
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "day",
+                    "type": {
+                      "type": "struct",
+                      "fields": [
+                        {
+                          "name": "maxtemp_c",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "maxtemp_f",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "mintemp_c",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "mintemp_f",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "avgtemp_c",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "avgtemp_f",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "maxwind_mph",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "maxwind_kph",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "totalprecip_mm",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "totalprecip_in",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "totalsnow_cm",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "avgvis_km",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "avgvis_miles",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "avghumidity",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "daily_will_it_rain",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "daily_chance_of_rain",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "daily_will_it_snow",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "daily_chance_of_snow",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "condition",
+                          "type": {
+                            "type": "struct",
+                            "fields": [
+                              {
+                                "name": "text",
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {}
+                              },
+                              {
+                                "name": "icon",
+                                "type": "string",
+                                "nullable": true,
+                                "metadata": {}
+                              },
+                              {
+                                "name": "code",
+                                "type": "integer",
+                                "nullable": true,
+                                "metadata": {}
+                              }
+                            ]
+                          },
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "uv",
+                          "type": "float",
+                          "nullable": true,
+                          "metadata": {}
+                        }
+                      ]
+                    },
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "astro",
+                    "type": {
+                      "type": "struct",
+                      "fields": [
+                        {
+                          "name": "sunrise",
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "sunset",
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "moonrise",
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "moonset",
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "moon_phase",
+                          "type": "string",
+                          "nullable": true,
+                          "metadata": {}
+                        },
+                        {
+                          "name": "moon_illumination",
+                          "type": "integer",
+                          "nullable": true,
+                          "metadata": {}
+                        }
+                      ]
+                    },
+                    "nullable": true,
+                    "metadata": {}
+                  },
+                  {
+                    "name": "hour",
+                    "type": {
+                      "type": "array",
+                      "elementType": {
+                        "type": "struct",
+                        "fields": [
+                          {
+                            "name": "time_epoch",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "time",
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "temp_c",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "temp_f",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "is_day",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "condition",
+                            "type": {
+                              "type": "struct",
+                              "fields": [
+                                {
+                                  "name": "text",
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {}
+                                },
+                                {
+                                  "name": "icon",
+                                  "type": "string",
+                                  "nullable": true,
+                                  "metadata": {}
+                                },
+                                {
+                                  "name": "code",
+                                  "type": "integer",
+                                  "nullable": true,
+                                  "metadata": {}
+                                }
+                              ]
+                            },
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "wind_mph",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "wind_kph",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "wind_degree",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "wind_dir",
+                            "type": "string",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "pressure_mb",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "pressure_in",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "precip_mm",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "precip_in",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "snow_cm",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "humidity",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "cloud",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "feelslike_c",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "feelslike_f",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "windchill_c",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "windchill_f",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "heatindex_c",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "heatindex_f",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "dewpoint_c",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "dewpoint_f",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "will_it_rain",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "chance_of_rain",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "will_it_snow",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "chance_of_snow",
+                            "type": "integer",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "vis_km",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "vis_miles",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          },
+                          {
+                            "name": "uv",
+                            "type": "float",
+                            "nullable": true,
+                            "metadata": {}
+                          }
+                        ]
+                      },
+                      "containsNull": true
+                    },
+                    "nullable": true,
+                    "metadata": {}
+                  }
+                ]
+              },
+              "containsNull": true
+            },
+            "nullable": true,
+            "metadata": {}
+          }
+        ]
+      },
+      "nullable": true,
+      "metadata": {}
+    }
+  ]
+}

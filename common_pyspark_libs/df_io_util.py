@@ -1,8 +1,51 @@
 from pyspark.sql import SparkSession, DataFrameReader, DataFrame
 from pyspark.sql.streaming import DataStreamReader
-from pyspark.sql.types import StructType
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 from pyspark.sql import functions as F
 from pyspark.sql.streaming import DataStreamWriter 
+from pyspark.sql.functions import col, explode, explode_outer
+
+import json
+import requests  
+
+
+
+def fetch_api_data(url: str, headers: dict = None, params: dict = None) -> list:
+    
+    if isinstance(params, str):  # If params is a string, parse it into a dictionary
+        params = json.loads(params)
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise ValueError(f"Failed to fetch data from {url}: {response.status_code} - {response.text}")
+
+
+#Flatten array of structs and structs
+def flatten(df):
+    #compute Complex Fields (Lists and Structs) in Schema   
+    complex_fields = dict([(field.name, field.dataType) for field in df.schema.fields if type(field.dataType) == ArrayType or  type(field.dataType) == StructType])
+    while len(complex_fields)!=0:
+        col_name=list(complex_fields.keys())[0]
+        print ("Processing :"+col_name+" Type : "+str(type(complex_fields[col_name])))
+            
+        #if StructType then convert all sub element to columns.
+        #i.e. flatten structs
+        if (type(complex_fields[col_name]) == StructType):
+            expanded = [col(col_name+'.'+k).alias(col_name+'_'+k) for k in [ n.name for n in  complex_fields[col_name]]]
+            df=df.select("*", *expanded).drop(col_name)
+           
+        #if ArrayType then add the Array Elements as Rows using the explode function
+        #i.e. explode Arrays
+        elif (type(complex_fields[col_name]) == ArrayType):    
+            df=df.withColumn(col_name,explode_outer(col_name))
+            
+        #recompute remaining Complex Fields in Schema       
+        complex_fields = dict([(field.name, field.dataType)
+                                for field in df.schema.fields
+                                if type(field.dataType) == ArrayType or  type(field.dataType) == StructType])
+    return df
+
 
 def df_rdr_kafka(spark : SparkSession, options_dict : dict ):
 
