@@ -8,7 +8,72 @@ from pyspark.sql.functions import col, explode, explode_outer
 import json
 import requests  
 
+def read_json(spark, file_path, schema, column_mapping_path):
+    raw_data = spark.read.option("multiline", "true")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.json(file_path)
 
+    if schema is None:
+        schema = raw_data.schema
+
+    if is_nested_schema(schema):
+        print("Flattening nested JSON schema...")
+        raw_data = flatten(raw_data)
+
+    if column_mapping_path:
+        print("Mapping columns")
+        with open(column_mapping_path, 'r') as file:
+            column_mapping = json.load(file)
+        for new_name, old_name in column_mapping.items():
+            raw_data = raw_data.withColumnRenamed(old_name.replace(".", "_"), new_name)
+
+    return raw_data
+
+def read_csv(spark, file_path, schema, header, column_mapping_path,delimiter):
+    reader = spark.read.format("csv").option("header", header).option("inferSchema", not schema).option("delimiter", delimiter)
+    if schema:
+        reader = reader.schema(schema)
+    raw_data = reader.load(file_path)
+
+    return raw_data
+
+def read_parquet(spark, file_path, schema):
+    raw_data = spark.read.format("parquet")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.load(file_path)
+    return raw_data
+
+def read_avro(spark, file_path, schema):
+    raw_data = spark.read.format("avro")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.load(file_path)
+    return raw_data
+
+def read_text(spark, file_path):
+    return spark.read.text(file_path)
+
+
+def process_file(spark, file_path, file_format, schema, header, column_mapping_path,delimiter):
+    if file_format == "json":
+        return read_json(spark, file_path, schema, column_mapping_path)
+    elif file_format == "csv":
+        return read_csv(spark, file_path, schema, header, column_mapping_path,delimiter)
+    elif file_format == "parquet":
+        return read_parquet(spark, file_path, schema)
+    elif file_format == "avro":
+        return read_avro(spark, file_path, schema)
+    elif file_format == "text":
+        return read_text(spark, file_path)
+    else:
+        raise ValueError(f"Unsupported file format: {file_format}")
+
+
+    
+def is_nested_schema(schema):
+    return any(isinstance(field.dataType, StructType) for field in schema.fields)
 
 def fetch_api_data(url: str, headers: dict = None, params: dict = None) -> list:
     
