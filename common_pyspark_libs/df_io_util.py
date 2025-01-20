@@ -3,6 +3,8 @@ from pyspark.sql.streaming import DataStreamReader
 from pyspark.sql.types import StructType
 from pyspark.sql import functions as F
 from pyspark.sql.streaming import DataStreamWriter 
+from common_pyspark_libs.dbx_tbl_util import chk_tbl_exists_local
+
 
 def df_rdr_kafka(spark : SparkSession, options_dict : dict ):
 
@@ -37,7 +39,7 @@ def df_stream_wrt_gcp():
 def df_stream_wrt_azure():
     pass 
 
-def df_wrt_kafka(runtime : str, df : DataFrame, dbx_table_format : str , dbx_table_location : str,outputmode : str , trigger_type : str):
+def df_stream_wrt(runtime : str, df : DataFrame, dbx_table_format : str , dbx_table_location : str,outputmode : str , trigger_type : str):
     if runtime == 'local':
         df_stream_wrt_local(  df ,dbx_table_format, dbx_table_location, outputmode, trigger_type)
     if runtime == 'aws':
@@ -64,11 +66,37 @@ def df_rdr_jdbc(spark : SparkSession, options_dict : dict):
     return df
 
 
-def  df_wrt_jdbc(runtime , df :  DataFrame, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format):
-    if runtime == 'local':
+def df_wrt_local(spark : SparkSession, runtime , df :  DataFrame, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format):
+    if chk_tbl_exists_local(spark, f'{dbx_table_location}\\data\\'):
+        df.write.format(dbx_table_format).mode(outputmode).save(f'{dbx_table_location}\\data\\')
+    else:
         df.write.format(dbx_table_format).mode(outputmode).option("path", f'{dbx_table_location}\\data\\').saveAsTable(f'{dbx_table}')
-        print(f'Table {dbx_catalog}.{dbx_db}.{dbx_table} created successfully')
+
+def df_wrt_aws():
+    pass
+
+def df_wrt_gcp():
+    pass
+
+def df_wrt_azure():
+    pass 
+
+def  df_wrt(spark : SparkSession, runtime , df :  DataFrame, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format):
+    if runtime == 'local':
+        df_wrt_local(spark, runtime , df, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format)
+        print(f' Data loaded into Table {dbx_catalog}.{dbx_db}.{dbx_table} successfully')
 
     else:
         raise ValueError(f'Runtime {runtime} not supported yet.')
 
+def df_strm_files_rdr(spark : SparkSession, options_dict : dict):
+    '''
+    df = spark.readStream.format("json").options(**options_dict).load()
+    return df
+    '''
+    pass 
+
+
+def df_files_rdr(spark : SparkSession, options_dict : dict , path ,format , schema):
+    df = spark.read.options(**options_dict).load(path=path, format=format, schema=schema)
+    return df
