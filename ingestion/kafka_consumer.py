@@ -82,7 +82,7 @@ def main():
     df = standarize_df_columns(df)
     df.printSchema()
 
-    df_wrt_kafka(runtime , df,dbx_table_format, dbx_table_location,outputmode , trigger_type )
+    df_stream_wrt(runtime , df,dbx_table_format, dbx_table_location,outputmode , trigger_type )
 
 if __name__ == '__main__':
     main()

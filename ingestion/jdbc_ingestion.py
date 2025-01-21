@@ -105,13 +105,13 @@ def main():
 
 
     #Read RAW Data from jdbc source
-    print('DF RDR Options are ......')
     df  = df_rdr_jdbc(spark, options_dict)
     #Removing the special characters from the column names
     df = standarize_df_columns(df)
     df.printSchema()
+    df.show()
     #Writing the dataframe to the delta table
-    df_wrt_jdbc(runtime , df, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format)
+    df_wrt(spark, runtime , df, dbx_table_location, outputmode , dbx_catalog, dbx_db, dbx_table, dbx_table_format)
 
 if __name__ == '__main__':
     main()
