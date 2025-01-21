@@ -1,8 +1,115 @@
 from pyspark.sql import SparkSession, DataFrameReader, DataFrame
 from pyspark.sql.streaming import DataStreamReader
-from pyspark.sql.types import StructType
+from pyspark.sql.types import StructType, StructField, StringType, ArrayType
 from pyspark.sql import functions as F
 from pyspark.sql.streaming import DataStreamWriter 
+from pyspark.sql.functions import col, explode, explode_outer
+
+import json
+import requests  
+
+def read_json(spark, file_path, schema, column_mapping_path):
+    raw_data = spark.read.option("multiline", "true")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.json(file_path)
+
+    if schema is None:
+        schema = raw_data.schema
+
+    if is_nested_schema(schema):
+        print("Flattening nested JSON schema...")
+        raw_data = flatten(raw_data)
+
+    if column_mapping_path:
+        print("Mapping columns")
+        with open(column_mapping_path, 'r') as file:
+            column_mapping = json.load(file)
+        for new_name, old_name in column_mapping.items():
+            raw_data = raw_data.withColumnRenamed(old_name.replace(".", "_"), new_name)
+
+    return raw_data
+
+def read_csv(spark, file_path, schema, header, column_mapping_path,delimiter):
+    reader = spark.read.format("csv").option("header", header).option("inferSchema", not schema).option("delimiter", delimiter)
+    if schema:
+        reader = reader.schema(schema)
+    raw_data = reader.load(file_path)
+
+    return raw_data
+
+def read_parquet(spark, file_path, schema):
+    raw_data = spark.read.format("parquet")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.load(file_path)
+    return raw_data
+
+def read_avro(spark, file_path, schema):
+    raw_data = spark.read.format("avro")
+    if schema:
+        raw_data = raw_data.schema(schema)
+    raw_data = raw_data.load(file_path)
+    return raw_data
+
+def read_text(spark, file_path):
+    return spark.read.text(file_path)
+
+
+def process_file(spark, file_path, file_format, schema, header, column_mapping_path,delimiter):
+    if file_format == "json":
+        return read_json(spark, file_path, schema, column_mapping_path)
+    elif file_format == "csv":
+        return read_csv(spark, file_path, schema, header, column_mapping_path,delimiter)
+    elif file_format == "parquet":
+        return read_parquet(spark, file_path, schema)
+    elif file_format == "avro":
+        return read_avro(spark, file_path, schema)
+    elif file_format == "text":
+        return read_text(spark, file_path)
+    else:
+        raise ValueError(f"Unsupported file format: {file_format}")
+
+
+    
+def is_nested_schema(schema):
+    return any(isinstance(field.dataType, StructType) for field in schema.fields)
+
+def fetch_api_data(url: str, headers: dict = None, params: dict = None) -> list:
+    
+    if isinstance(params, str):  # If params is a string, parse it into a dictionary
+        params = json.loads(params)
+    response = requests.get(url, headers=headers, params=params)
+    if response.status_code == 200:
+        return response.json()
+    else:
+        raise ValueError(f"Failed to fetch data from {url}: {response.status_code} - {response.text}")
+
+
+#Flatten array of structs and structs
+def flatten(df):
+    #compute Complex Fields (Lists and Structs) in Schema   
+    complex_fields = dict([(field.name, field.dataType) for field in df.schema.fields if type(field.dataType) == ArrayType or  type(field.dataType) == StructType])
+    while len(complex_fields)!=0:
+        col_name=list(complex_fields.keys())[0]
+        print ("Processing :"+col_name+" Type : "+str(type(complex_fields[col_name])))
+            
+        #if StructType then convert all sub element to columns.
+        #i.e. flatten structs
+        if (type(complex_fields[col_name]) == StructType):
+            expanded = [col(col_name+'.'+k).alias(col_name+'_'+k) for k in [ n.name for n in  complex_fields[col_name]]]
+            df=df.select("*", *expanded).drop(col_name)
+           
+        #if ArrayType then add the Array Elements as Rows using the explode function
+        #i.e. explode Arrays
+        elif (type(complex_fields[col_name]) == ArrayType):    
+            df=df.withColumn(col_name,explode_outer(col_name))
+            
+        #recompute remaining Complex Fields in Schema       
+        complex_fields = dict([(field.name, field.dataType)
+                                for field in df.schema.fields
+                                if type(field.dataType) == ArrayType or  type(field.dataType) == StructType])
+    return df
 from common_pyspark_libs.dbx_tbl_util import chk_tbl_exists_local
 
 

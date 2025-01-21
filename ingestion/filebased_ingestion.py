@@ -5,7 +5,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql import DataFrameReader
 from pyspark.sql import DataFrame
 from pyspark.sql.streaming import DataStreamReader
-from pyspark.sql.functions import from_unixtime, column , date_trunc , trunc , to_date, to_json, col , struct, monotonically_increasing_id,from_json, explode
+from pyspark.sql.functions import from_unixtime, column , col, date_trunc , trunc , to_date, to_json, col , struct, monotonically_increasing_id,from_json, explode, explode_outer
 from pyspark.sql.types import StringType, StructField, StringType, IntegerType, DateType, StructType
 
 add_modules_path()
@@ -32,6 +32,10 @@ def main():
     file_path = cmdln_arg.get('file_path')
     stream_api = cmdln_arg.get('stream_api')
     archive_processed_files = cmdln_arg.get('archive_processed_files')
+    header = cmdln_arg.get('header', 'false')  # Default is 'false' if not provided
+    delimiter = cmdln_arg.get('delimiter', ',')  # Default delimiter is comma if not provided
+    column_mapping_path = cmdln_arg.get('column_mapping_path')
+
 
     dbx_catalog = cmdln_arg.get('dbx_catalog')
     dbx_db = cmdln_arg.get('dbx_db')
@@ -43,7 +47,9 @@ def main():
     outputmode = cmdln_arg.get('outputmode')
 
     options_dict =  {}
-
+    # Ensure the header is a boolean
+    header = 'true' if header.lower() == 'true' else 'false'
+    
     if runtime == 'local':
 
         conf = SparkConf()
@@ -88,7 +94,7 @@ def main():
 
     else:
         #Read RAW Data from files
-        df  = df_files_rdr(spark = spark, options_dict = options_dict, path = file_path ,format = src_sys_format , schema = schema)
+        df  = process_file(spark, file_path, src_sys_format, schema, header, column_mapping_path,delimiter)
         #Removing the special characters from the column names
         df = standarize_df_columns(df)
         df.printSchema()
